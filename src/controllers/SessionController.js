@@ -55,9 +55,9 @@ module.exports = {
                         level: user.val().level,
                         pwd: hashedPwd
                     },
-                        process.env.TOKEN_SECRET,
+                        'segredo',
                         {
-                            expiresIn: process.env.TOKEN_TIME_LIFE
+                            expiresIn: '10h'
                         });
                     return res.status(200).json({ message: 'Success', token: token });
                 } else {
@@ -65,7 +65,7 @@ module.exports = {
                 }
             }
         }).catch((e) => {
-            return res.status(500).json({ err: e });
+            return res.status(500).json({ err: ':' + e });
         })
 
     },
@@ -75,7 +75,7 @@ module.exports = {
         const { email } = req.user;
         try {
             var token = req.headers.authorization.split(' ')[1];
-            var decode = jwt.verify(token, process.env.TOKEN_SECRET);
+            var decode = jwt.verify(token, 'segredo');
             decode.pwd = newPwd;
             token = jwt.sign(
                 {
@@ -85,7 +85,7 @@ module.exports = {
                 level: decode.level,
                 pwd: decode.pwd
             }
-            , process.env.TOKEN_SECRET, { expiresIn: process.env.TOKEN_TIME_LIFE });
+            , 'segredo', { expiresIn: '10h' });
             console.log('cu')
             return res.status(200).json({ message: token });
         } catch (error) {
